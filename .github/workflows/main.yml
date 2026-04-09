@@ -10,16 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_KEY }}
-        script: |
-          cd ~/delivery-app
-          git pull
-         docker ps -q --filter "publish=5001" | xargs -r docker stop
-         docker ps -aq --filter "publish=5001" | xargs -r docker rm
-          docker build -t delivery-app .
-          docker run -d -p 5001:5001 --name delivery-app delivery-app
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/delivery-app
+            git pull
+
+            docker stop $(docker ps -q) || true
+            docker rm $(docker ps -aq) || true
+
+            docker build -t delivery-app .
+            docker run -d -p 5001:5001 --name delivery-app delivery-app
