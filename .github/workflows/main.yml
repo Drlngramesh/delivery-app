@@ -19,7 +19,7 @@ jobs:
         script: |
           cd ~/delivery-app
           git pull
-          docker stop delivery-app || true
-          docker rm delivery-app || true
+         docker ps -q --filter "publish=5001" | xargs -r docker stop
+         docker ps -aq --filter "publish=5001" | xargs -r docker rm
           docker build -t delivery-app .
           docker run -d -p 5001:5001 --name delivery-app delivery-app
