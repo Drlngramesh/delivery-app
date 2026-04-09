@@ -6,7 +6,7 @@ orders = []
 
 @app.route('/')
 def home():
-    return "🚀 Delivery App Running"
+    return "🚀 Delivery App is Running"
 
 @app.route('/order', methods=['POST'])
 def create_order():
